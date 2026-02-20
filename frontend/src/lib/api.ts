@@ -31,4 +31,15 @@ export async function scoreLeads(leads: Array<{ name: string; engagement: number
   return res.data;
 }
 
+export const getCompetitorAnalysis = async (
+  competitor: string,
+  industry: string
+) => {
+  const res = await api.post("/competitor_analysis", {
+    competitor,
+    industry,
+  });
+  return res.data;
+};
+
 export default api;

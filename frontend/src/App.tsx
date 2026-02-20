@@ -14,6 +14,7 @@ import Sentiment from "./pages/Sentiment";
 import LeadScoring from "./pages/LeadScoring";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import CompetitorAnalysis from "./pages/CompetitorAnalysis";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/sentiment" element={<Sentiment />} />
             <Route path="/leads" element={<LeadScoring />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/competitor-analysis" element={<CompetitorAnalysis />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

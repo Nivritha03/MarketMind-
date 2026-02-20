@@ -19,6 +19,7 @@ const navItems = [
   { path: "/insights", label: "Market Insights", icon: TrendingUp },
   { path: "/sentiment", label: "Sentiment Analysis", icon: SmilePlus },
   { path: "/leads", label: "Lead Scoring", icon: Target },
+  { path: "/competitor-analysis", label: "Competitor Analysis", icon: Shield }, // ✅ ADDED
   { path: "/admin", label: "Admin Panel", icon: Shield },
 ];
 

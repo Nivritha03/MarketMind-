@@ -64,6 +64,12 @@ class Lead(BaseModel):
     engagement: float
     budget: float
 
+class CompetitorInput(BaseModel):
+    competitor: str
+    industry: str
+
+
+
 # ================= AI GENERATION =================
 
 def generate_with_groq(prompt):
@@ -275,6 +281,57 @@ Return only 1 sentence.
     scored.sort(key=lambda x: x["score"], reverse=True)
 
     return scored
+
+# ----------------competitor_analysis----------------
+
+@app.post("/competitor_analysis")
+def competitor_analysis(data: CompetitorInput):
+
+    prompt = f"""
+You are a strategic business analyst.
+
+Analyze this competitor:
+
+Competitor: {data.competitor}
+Industry: {data.industry}
+
+Return ONLY valid JSON in this exact format:
+
+{{
+  "strengths": ["point1", "point2", "point3"],
+  "weaknesses": ["point1", "point2", "point3"],
+  "differentiation_strategy": "clear differentiation strategy",
+  "positioning_angle": "strong positioning recommendation"
+}}
+
+DO NOT add explanation text.
+DO NOT add markdown.
+"""
+
+    raw_response = ai_generate(prompt)
+
+    try:
+        import re, json
+        json_match = re.search(r"\{.*\}", raw_response, re.DOTALL)
+        if json_match:
+            return json.loads(json_match.group())
+        raise Exception("No JSON found")
+
+    except:
+        return {
+            "strengths": [
+                "Strong brand recognition",
+                "Established customer base"
+            ],
+            "weaknesses": [
+                "High pricing",
+                "Limited AI features"
+            ],
+            "differentiation_strategy":
+                "Position as AI-first and automation-focused alternative.",
+            "positioning_angle":
+                "Smart automation without enterprise complexity."
+        }
 
 # ================= DASHBOARD =================
 
