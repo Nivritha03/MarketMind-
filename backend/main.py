@@ -224,33 +224,56 @@ def sentiment(data: TextData):
     except:
         return {"error": "Sentiment failed"}
 
-# ================= LEAD SCORING =================
+# ---------------- LEAD SCORING ----------------
 
 @app.post("/score_leads")
 def score_leads(leads: List[Lead]):
+
     scored = []
 
     for l in leads:
+
+        # Normalize score
         score = ((l.engagement * 10) * 0.6) + ((l.budget / 100) * 0.4)
         score = min(score, 100)
 
-        status = "Hot" if score >= 80 else "Warm" if score >= 50 else "Cold"
+        # Status logic
+        if score >= 80:
+            status = "Hot"
+        elif score >= 50:
+            status = "Warm"
+        else:
+            status = "Cold"
 
-        lead_store.append({
-            "name": l.name,
-            "engagement": l.engagement,
-            "budget": l.budget,
-            "score": round(score, 2),
-            "status": status
-        })
+        # 🧠 AI Next Best Action Prompt
+        action_prompt = f"""
+You are a sales strategy AI.
+
+Lead Name: {l.name}
+Engagement Score: {l.engagement}
+Budget: {l.budget}
+Lead Status: {status}
+
+Generate a short personalized next best action for this lead.
+Be specific and actionable.
+Return only 1 sentence.
+"""
+
+        try:
+            ai_action = ai_generate(action_prompt)
+            ai_action = ai_action.strip()
+        except:
+            ai_action = "Follow up with a personalized outreach message."
 
         scored.append({
             "name": l.name,
             "score": round(score, 2),
-            "status": status
+            "status": status,
+            "action": ai_action
         })
 
     scored.sort(key=lambda x: x["score"], reverse=True)
+
     return scored
 
 # ================= DASHBOARD =================
